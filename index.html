@@ -186,11 +186,13 @@
             }
             .chart-wrap {
                 position: relative;
-                height: 120px;
+                height: 140px;
+                max-width: 960px;
             }
             svg.intensity-chart {
                 width: 100%;
                 height: 100%;
+                display: block;
             }
 
             /* MAIN LAYOUT */
@@ -545,8 +547,8 @@
                 <svg
                     class="intensity-chart"
                     id="intensityChart"
-                    viewBox="0 0 800 120"
-                    preserveAspectRatio="none"
+                    viewBox="0 0 800 140"
+                    preserveAspectRatio="xMidYMid meet"
                 ></svg>
             </div>
             <div class="chart-note">
@@ -688,7 +690,7 @@
                     title: "Психологическая фаза",
                     subtitle: "Мозг заново учится регулировать себя",
                     color: "#f39c12",
-                    intensity: 8,
+                    intensity: 9,
                     physiology:
                         "Физическая отмена завершена у большинства людей. Идёт психологическая реадаптация — префронтальная кора восстанавливает регуляторный контроль над лимбической системой без химической поддержки. Эндогенная система вознаграждения перестраивается: мозг заново калибрует что считать стимулом достаточным для выброса дофамина.",
                     symptoms: [
@@ -856,13 +858,13 @@
             function buildChart() {
                 const svg = document.getElementById("intensityChart");
                 const W = 800,
-                    H = 120;
+                    H = 140;
                 const xPcts = [0.02, 0.08, 0.18, 0.38, 0.62, 0.82, 0.96];
 
                 // физический дискомфорт — пик в 1-7, быстро падает
                 const physVals = [8, 10, 6, 4, 2, 1, 0.5];
                 // психологический — нарастает к 15-30, пик выше физического, долго держится
-                const psychVals = [3, 5, 7, 9, 5, 2, 1];
+                const psychVals = [3, 5, 7, 10, 5, 2, 1];
 
                 function makePoints(vals) {
                     return vals.map((v, i) => ({
