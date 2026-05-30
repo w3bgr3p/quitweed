@@ -4,33 +4,52 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Отмена каннабиса — нейрохимия восстановления</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+            href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
         <style>
             :root {
-                --bg: #0a0c0f;
-                --surface: #111318;
-                --border: #1e2330;
-                --text: #c8d0e0;
-                --text-dim: #5a6480;
-                --text-bright: #e8edf8;
-                --accent: #4a9eff;
-                --red: #e74c3c;
-                --orange: #e67e22;
-                --yellow: #f1c40f;
-                --green: #2ecc71;
-                --blue: #3498db;
-                --teal: #1abc9c;
-                --mono: "IBM Plex Mono", monospace;
-                --sans: "IBM Plex Sans", sans-serif;
+                /* ZP design system tokens */
+                --bg: #0d1117;
+                --bg1: #161b22;
+                --bg2: #21262d;
+                --bg3: #1f2937;
+                --border: #30363d;
+                --border-soft: #21262d;
+                --muted: #484f58;
+                --text2: #8b949e;
+                --text: #c9d1d9;
+                --text-hi: #e6edf3;
+                --accent: #58a6ff;
+                --green: #3fb950;
+                --red: #f85149;
+                --yellow: #d29922;
+                --purple: #a371f7;
+
+                --radius: 6px;
+                --radius-sm: 3px;
+                --radius-lg: 10px;
+
+                --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
+                    monospace;
+                --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+                    Arial, sans-serif;
             }
 
             * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
+            }
+            ::selection {
+                background: var(--accent);
+                color: #00121f;
+            }
+            html {
+                scroll-behavior: smooth;
             }
 
             body {
@@ -40,386 +59,535 @@
                 font-size: 14px;
                 line-height: 1.6;
                 min-height: 100vh;
+                overflow-x: hidden;
             }
 
-            /* HEADER */
-            .header {
-                border-bottom: 1px solid var(--border);
-                padding: 40px 60px 32px;
-                position: relative;
-                overflow: hidden;
-            }
-            .header::before {
+            /* ---- Layered textured void (ZP) ---- */
+            body::before {
                 content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 1px;
-                background: linear-gradient(
-                    90deg,
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+                opacity: 0.03;
+            }
+            body::after {
+                content: "";
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+                background: repeating-linear-gradient(
+                    0deg,
                     transparent,
-                    var(--accent),
-                    transparent
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.12) 2px,
+                    rgba(0, 0, 0, 0.12) 4px
                 );
             }
-            .header-label {
-                font-family: var(--mono);
-                font-size: 10px;
-                letter-spacing: 0.2em;
-                color: var(--text-dim);
-                text-transform: uppercase;
-                margin-bottom: 12px;
-            }
-            .header h1 {
-                font-size: 28px;
-                font-weight: 300;
-                color: var(--text-bright);
-                letter-spacing: -0.02em;
-                margin-bottom: 8px;
-            }
-            .header h1 span {
-                color: var(--accent);
-                font-weight: 500;
-            }
-            .header-sub {
-                font-size: 13px;
-                color: var(--text-dim);
-                font-family: var(--mono);
+            .grid-bg {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+                background-image:
+                    linear-gradient(var(--border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+                background-size: 60px 60px;
+                opacity: 0.5;
+                mask-image: radial-gradient(
+                    ellipse 70% 55% at 50% 0%,
+                    black 4%,
+                    transparent 72%
+                );
+                -webkit-mask-image: radial-gradient(
+                    ellipse 70% 55% at 50% 0%,
+                    black 4%,
+                    transparent 72%
+                );
             }
 
-            /* TIMELINE BAR */
-            .timeline-container {
-                padding: 32px 60px;
-                border-bottom: 1px solid var(--border);
+            /* ---- Shell ---- */
+            .shell {
+                max-width: 1460px;
+                margin: 0 auto;
+                padding: 30px 32px 72px;
+                position: relative;
+                z-index: 1;
             }
-            .timeline-label {
+
+            .workspace {
+                display: grid;
+                grid-template-columns: 300px minmax(0, 1fr);
+                gap: 30px;
+                align-items: start;
+            }
+
+            /* section label — // prefix */
+            .sec-label {
                 font-family: var(--mono);
                 font-size: 10px;
-                letter-spacing: 0.15em;
-                color: var(--text-dim);
+                letter-spacing: 0.18em;
                 text-transform: uppercase;
+                color: var(--text2);
+                display: flex;
+                align-items: center;
+                gap: 9px;
+            }
+            .sec-label::before {
+                content: "//";
+                color: var(--muted);
+            }
+
+            /* ======================= RAIL ======================= */
+            .rail {
+                position: sticky;
+                top: 30px;
+                display: flex;
+                flex-direction: column;
+                max-height: calc(100vh - 60px);
+            }
+
+            .masthead {
+                padding-bottom: 22px;
+                border-bottom: 1px solid var(--border);
+            }
+            .mast-label {
+                font-family: var(--mono);
+                font-size: 10px;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--muted);
+                margin-bottom: 14px;
+            }
+            .mast-title {
+                font-family: var(--mono);
+                font-size: 30px;
+                font-weight: 700;
+                line-height: 1.02;
+                letter-spacing: -0.03em;
+                color: var(--text-hi);
+                margin-bottom: 14px;
+            }
+            .mast-title span {
+                color: var(--accent);
+                display: block;
+            }
+            .mast-meta {
+                font-family: var(--mono);
+                font-size: 11px;
+                line-height: 1.7;
+                color: var(--text2);
+            }
+
+            .rail-nav-label {
+                margin: 22px 0 12px;
+            }
+
+            .nav {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+                overflow-y: auto;
+                margin: 0 -6px;
+                padding: 0 6px;
+            }
+            .nav-item {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                align-items: center;
+                column-gap: 10px;
+                padding: 9px 12px;
+                cursor: pointer;
+                border: 1px solid transparent;
+                border-radius: var(--radius);
+                position: relative;
+                transition:
+                    background var(--dur, 0.14s) ease,
+                    border-color 0.14s ease;
+            }
+            .nav-item:hover {
+                background: var(--bg1);
+            }
+            .nav-item.active {
+                background: var(--bg2);
+                border-color: var(--border);
+            }
+            .nav-item.active::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 8px;
+                bottom: 8px;
+                width: 2px;
+                border-radius: 2px;
+                background: var(--accent);
+            }
+            .nav-days {
+                grid-row: 1;
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 0.08em;
+                margin-bottom: 1px;
+            }
+            .nav-title {
+                grid-row: 2;
+                font-size: 12.5px;
+                font-weight: 500;
+                color: var(--text2);
+                line-height: 1.3;
+            }
+            .nav-item:hover .nav-title,
+            .nav-item.active .nav-title {
+                color: var(--text-hi);
+            }
+            .nav-dot {
+                grid-column: 2;
+                grid-row: 1 / 3;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+            }
+
+            .rail-note {
+                margin-top: 18px;
+                padding-top: 16px;
+                border-top: 1px solid var(--border);
+                font-family: var(--mono);
+                font-size: 10px;
+                line-height: 1.7;
+                color: var(--muted);
+            }
+
+            /* ======================= STAGE ======================= */
+            .stage {
+                min-width: 0;
+            }
+
+            /* ---- Overview card: timeline + chart ---- */
+            .overview {
+                background: var(--bg1);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 22px 24px 20px;
+                margin-bottom: 26px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            }
+            .ov-head {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-between;
+                gap: 16px;
+                flex-wrap: wrap;
                 margin-bottom: 16px;
             }
+            .ov-hint {
+                font-family: var(--mono);
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 0.04em;
+            }
+
             .timeline-track {
                 position: relative;
-                height: 64px;
+                height: 58px;
                 display: flex;
-                gap: 3px;
+                gap: 4px;
+                margin-bottom: 26px;
             }
             .tl-segment {
-                flex: 1;
-                border-radius: 3px;
+                border-radius: var(--radius-sm);
                 cursor: pointer;
                 position: relative;
                 transition:
-                    opacity 0.2s,
-                    transform 0.2s;
+                    transform 0.18s ease,
+                    box-shadow 0.18s ease;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-end;
-                padding: 0 6px 6px;
+                padding: 0 7px 6px;
                 overflow: hidden;
+                background: var(--bg2);
+                border: 1px solid var(--border);
             }
             .tl-segment:hover {
-                opacity: 0.85;
                 transform: translateY(-2px);
             }
             .tl-segment.active {
-                outline: 2px solid rgba(255, 255, 255, 0.3);
-                outline-offset: 2px;
+                box-shadow: 0 0 0 1px var(--accent);
+                border-color: var(--accent);
             }
             .tl-bar {
                 position: absolute;
                 bottom: 0;
                 left: 0;
                 right: 0;
-                border-radius: 3px;
                 transition: height 0.4s ease;
             }
             .tl-days {
                 font-family: var(--mono);
                 font-size: 9px;
-                color: rgba(255, 255, 255, 0.5);
+                color: var(--text-hi);
                 position: relative;
                 z-index: 1;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
             }
 
-            /* INTENSITY CHART */
-            .chart-container {
-                padding: 32px 60px;
-                border-bottom: 1px solid var(--border);
-            }
             .chart-title {
-                font-family: var(--mono);
-                font-size: 10px;
-                letter-spacing: 0.15em;
-                color: var(--text-dim);
-                text-transform: uppercase;
-                margin-bottom: 12px;
                 display: flex;
                 align-items: center;
-                gap: 24px;
+                gap: 22px;
+                flex-wrap: wrap;
+                margin-bottom: 12px;
             }
             .chart-legend {
                 display: flex;
-                gap: 20px;
+                gap: 18px;
             }
             .legend-item {
                 display: flex;
                 align-items: center;
-                gap: 6px;
+                gap: 7px;
+                font-family: var(--mono);
                 font-size: 10px;
-                color: var(--text-dim);
+                color: var(--text2);
             }
             .legend-line {
-                width: 20px;
+                width: 18px;
                 height: 2px;
                 border-radius: 1px;
             }
-            .chart-note {
-                font-size: 10px;
-                color: var(--text-dim);
-                font-family: var(--mono);
-                margin-top: 8px;
-                opacity: 0.6;
-            }
             .chart-wrap {
                 position: relative;
-                height: 140px;
-                max-width: 960px;
+                width: 100%;
+                height: 210px;
             }
             svg.intensity-chart {
                 width: 100%;
                 height: 100%;
                 display: block;
+                overflow: visible;
             }
-
-            /* MAIN LAYOUT */
-            .main {
-                display: grid;
-                grid-template-columns: 220px 1fr;
-                min-height: calc(100vh - 320px);
-            }
-
-            /* NAV */
-            .nav {
-                border-right: 1px solid var(--border);
-                padding: 24px 0;
-            }
-            .nav-item {
-                padding: 12px 24px;
-                cursor: pointer;
-                border-left: 2px solid transparent;
-                transition: all 0.15s;
-                position: relative;
-            }
-            .nav-item:hover {
-                background: rgba(255, 255, 255, 0.02);
-            }
-            .nav-item.active {
-                border-left-color: var(--accent);
-                background: rgba(74, 158, 255, 0.05);
-            }
-            .nav-days {
+            .chart-note {
                 font-family: var(--mono);
                 font-size: 10px;
-                color: var(--text-dim);
-                letter-spacing: 0.1em;
-                margin-bottom: 3px;
-            }
-            .nav-title {
-                font-size: 12px;
-                font-weight: 500;
-                color: var(--text);
-            }
-            .nav-item.active .nav-title {
-                color: var(--text-bright);
-            }
-            .nav-dot {
-                width: 6px;
-                height: 6px;
-                border-radius: 50%;
-                position: absolute;
-                right: 20px;
-                top: 50%;
-                transform: translateY(-50%);
+                color: var(--muted);
+                margin-top: 10px;
             }
 
-            /* CONTENT */
-            .content {
-                padding: 40px 48px;
-                overflow-y: auto;
-            }
-
+            /* ---- Period detail ---- */
             .period-header {
-                margin-bottom: 40px;
-                padding-bottom: 24px;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-end;
+                gap: 16px 24px;
+                margin-bottom: 26px;
+                padding-bottom: 22px;
                 border-bottom: 1px solid var(--border);
+            }
+            .ph-left {
+                min-width: 0;
             }
             .period-tag {
                 font-family: var(--mono);
                 font-size: 10px;
-                letter-spacing: 0.2em;
-                color: var(--text-dim);
+                letter-spacing: 0.18em;
+                color: var(--text2);
                 text-transform: uppercase;
-                margin-bottom: 8px;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 9px;
+            }
+            .period-tag::before {
+                content: "";
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--p-color, var(--accent));
+                box-shadow: 0 0 0 3px
+                    color-mix(in srgb, var(--p-color, var(--accent)) 18%, transparent);
             }
             .period-title {
-                font-size: 24px;
-                font-weight: 300;
-                color: var(--text-bright);
+                font-family: var(--mono);
+                font-size: 26px;
+                font-weight: 700;
+                color: var(--text-hi);
                 letter-spacing: -0.02em;
                 margin-bottom: 6px;
+                line-height: 1.05;
             }
             .period-subtitle {
                 font-size: 13px;
-                color: var(--text-dim);
-                font-family: var(--mono);
+                color: var(--text2);
             }
 
-            /* INTENSITY BADGE */
             .intensity-badge {
                 display: inline-flex;
                 align-items: center;
-                gap: 8px;
-                margin-top: 12px;
-                padding: 4px 12px;
-                border-radius: 20px;
-                background: rgba(255, 255, 255, 0.04);
+                gap: 10px;
+                padding: 7px 14px;
+                border-radius: var(--radius);
+                background: var(--bg1);
                 border: 1px solid var(--border);
                 font-family: var(--mono);
-                font-size: 11px;
-                color: var(--text-dim);
+                font-size: 10px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--text2);
+                margin-left: auto;
             }
             .intensity-bar {
                 display: flex;
                 gap: 2px;
             }
             .intensity-pip {
-                width: 8px;
-                height: 8px;
+                width: 7px;
+                height: 14px;
                 border-radius: 1px;
-                background: var(--border);
+                background: var(--bg3);
             }
             .intensity-pip.on {
                 background: currentColor;
             }
-
-            /* BLOCKS */
-            .blocks {
-                display: grid;
-                gap: 20px;
+            .intensity-val {
+                font-size: 12px;
+                color: var(--text-hi);
+                letter-spacing: 0;
             }
 
+            /* blocks — masonry into 2 columns on wide screens */
+            .blocks {
+                columns: 2;
+                column-gap: 22px;
+            }
             .block {
-                background: var(--surface);
+                background: var(--bg1);
                 border: 1px solid var(--border);
-                border-radius: 6px;
+                border-radius: var(--radius);
                 overflow: hidden;
+                break-inside: avoid;
+                margin-bottom: 22px;
             }
             .block-header {
-                padding: 12px 20px;
+                padding: 12px 18px;
                 border-bottom: 1px solid var(--border);
                 display: flex;
                 align-items: center;
                 gap: 10px;
+                background: color-mix(in srgb, var(--bg2) 50%, transparent);
             }
             .block-icon {
-                width: 20px;
-                height: 20px;
-                opacity: 0.7;
+                width: 18px;
+                height: 18px;
+                flex-shrink: 0;
             }
             .block-heading {
                 font-family: var(--mono);
                 font-size: 10px;
-                letter-spacing: 0.15em;
+                letter-spacing: 0.14em;
                 text-transform: uppercase;
-                color: var(--text-dim);
+                color: var(--text2);
             }
             .block-body {
-                padding: 20px;
+                padding: 18px;
             }
             .block-body p {
-                font-size: 13px;
-                line-height: 1.7;
+                font-size: 13.5px;
+                line-height: 1.72;
                 color: var(--text);
             }
 
-            /* SYMPTOMS TABLE */
+            /* full-width block (spans both columns) */
+            .block.wide {
+                column-span: all;
+            }
+
             .symptoms-list {
                 display: grid;
-                gap: 12px;
+                gap: 10px;
             }
             .symptom-row {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: minmax(140px, 0.9fr) 1.3fr;
                 gap: 16px;
-                padding: 12px;
-                background: rgba(0, 0, 0, 0.2);
-                border-radius: 4px;
+                padding: 12px 14px;
+                background: var(--bg);
+                border-radius: var(--radius-sm);
                 border-left: 2px solid var(--border);
             }
             .symptom-name {
-                font-size: 12px;
-                font-weight: 500;
-                color: var(--text-bright);
+                font-size: 12.5px;
+                font-weight: 600;
+                color: var(--text-hi);
+                line-height: 1.4;
             }
             .symptom-cause {
                 font-size: 12px;
-                color: var(--text-dim);
-                font-style: italic;
+                color: var(--text2);
+                line-height: 1.55;
             }
 
-            /* TIP BLOCK */
             .tip-block {
-                border-color: rgba(74, 158, 255, 0.2);
-                background: rgba(74, 158, 255, 0.04);
+                border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
             }
             .tip-block .block-header {
-                border-color: rgba(74, 158, 255, 0.15);
+                background: color-mix(in srgb, var(--accent) 8%, transparent);
+                border-color: color-mix(in srgb, var(--accent) 22%, var(--border));
             }
             .tip-block .block-heading {
                 color: var(--accent);
-                opacity: 0.7;
             }
             .tip-block .block-body p {
-                color: var(--text-bright);
+                color: var(--text-hi);
             }
 
-            /* RECOVERY BLOCK */
             .recovery-block {
-                border-color: rgba(46, 204, 113, 0.2);
+                border-color: color-mix(in srgb, var(--green) 28%, var(--border));
+            }
+            .recovery-block .block-header {
+                background: color-mix(in srgb, var(--green) 7%, transparent);
             }
             .recovery-block .block-heading {
                 color: var(--green);
-                opacity: 0.7;
             }
 
-            /* SYSTEMS DIAGRAM */
             .systems-grid {
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
                 gap: 12px;
-                margin-top: 20px;
             }
             .system-card {
-                padding: 14px;
+                padding: 13px 14px;
                 border: 1px solid var(--border);
-                border-radius: 4px;
-                background: rgba(0, 0, 0, 0.2);
+                border-radius: var(--radius-sm);
+                background: var(--bg);
+            }
+            .system-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 9px;
+                gap: 8px;
             }
             .system-name {
                 font-family: var(--mono);
-                font-size: 10px;
-                color: var(--text-dim);
-                margin-bottom: 8px;
-                letter-spacing: 0.1em;
+                font-size: 9.5px;
+                color: var(--text2);
+                letter-spacing: 0.06em;
                 text-transform: uppercase;
+            }
+            .system-pct {
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--text-hi);
             }
             .system-bar-wrap {
                 height: 4px;
-                background: var(--border);
+                background: var(--bg3);
                 border-radius: 2px;
                 overflow: hidden;
             }
@@ -428,38 +596,9 @@
                 border-radius: 2px;
                 transition: width 0.6s ease;
             }
-            .system-pct {
-                font-family: var(--mono);
-                font-size: 11px;
-                color: var(--text-bright);
-                margin-top: 6px;
-            }
-
-            /* PERIOD COLORS */
-            .c1 {
-                color: #e74c3c;
-            }
-            .c2 {
-                color: #c0392b;
-            }
-            .c3 {
-                color: #e67e22;
-            }
-            .c4 {
-                color: #f39c12;
-            }
-            .c5 {
-                color: #27ae60;
-            }
-            .c6 {
-                color: #2980b9;
-            }
-            .c7 {
-                color: #1abc9c;
-            }
 
             .fade-in {
-                animation: fadeIn 0.3s ease;
+                animation: fadeIn 0.32s ease;
             }
             @keyframes fadeIn {
                 from {
@@ -472,93 +611,153 @@
                 }
             }
 
-            @media (max-width: 768px) {
-                .header,
-                .timeline-container,
-                .chart-container {
-                    padding: 24px;
+            /* ======================= RESPONSIVE ======================= */
+            @media (max-width: 1180px) {
+                .blocks {
+                    columns: 1;
                 }
-                .main {
+            }
+            @media (max-width: 980px) {
+                .shell {
+                    padding: 22px 20px 56px;
+                }
+                .workspace {
                     grid-template-columns: 1fr;
+                    gap: 24px;
+                }
+                .rail {
+                    position: static;
+                    max-height: none;
+                }
+                .masthead {
+                    border-bottom: none;
+                    padding-bottom: 0;
+                }
+                .mast-title {
+                    font-size: 34px;
+                }
+                .mast-title span {
+                    display: inline;
+                }
+                .rail-nav-label {
+                    margin-top: 20px;
                 }
                 .nav {
-                    display: flex;
+                    flex-direction: row;
                     overflow-x: auto;
-                    border-right: none;
-                    border-bottom: 1px solid var(--border);
-                    padding: 0;
+                    gap: 8px;
+                    padding-bottom: 6px;
+                    margin: 0;
+                    scrollbar-width: thin;
                 }
                 .nav-item {
-                    min-width: 120px;
-                    border-left: none;
-                    border-bottom: 2px solid transparent;
+                    min-width: 168px;
+                    flex-shrink: 0;
                 }
-                .nav-item.active {
-                    border-bottom-color: var(--accent);
-                    border-left-color: transparent;
+                .nav-item.active::before {
+                    display: none;
                 }
-                .content {
-                    padding: 24px;
+                .rail-note {
+                    display: none;
+                }
+                .intensity-badge {
+                    margin-left: 0;
+                }
+            }
+            @media (max-width: 560px) {
+                .shell {
+                    padding: 18px 14px 48px;
+                }
+                .overview {
+                    padding: 18px 16px;
+                }
+                .chart-wrap {
+                    height: 180px;
                 }
                 .symptom-row {
                     grid-template-columns: 1fr;
+                    gap: 6px;
                 }
-                .systems-grid {
-                    grid-template-columns: repeat(2, 1fr);
+                .period-title {
+                    font-size: 22px;
                 }
             }
         </style>
     </head>
     <body>
-        <div class="header">
-            <div class="header-label">Нейрохимия восстановления</div>
-            <h1>Отмена <span>каннабиса</span></h1>
-            <div class="header-sub">
-                CB1-рецепторы · эндоканнабиноидная система · нейропластика
-            </div>
-        </div>
+        <div class="grid-bg"></div>
 
-        <div class="timeline-container">
-            <div class="timeline-label">Временная шкала — нажми на период</div>
-            <div class="timeline-track" id="tlTrack"></div>
-        </div>
-
-        <div class="chart-container">
-            <div class="chart-title">
-                Дискомфорт по периодам
-                <div class="chart-legend">
-                    <div class="legend-item">
-                        <div
-                            class="legend-line"
-                            style="background: #e74c3c"
-                        ></div>
-                        физический
+        <div class="shell">
+            <div class="workspace">
+                <!-- ===================== RAIL ===================== -->
+                <aside class="rail">
+                    <div class="masthead">
+                        <div class="mast-label">Нейрохимия восстановления</div>
+                        <h1 class="mast-title">Отмена <span>каннабиса</span></h1>
+                        <div class="mast-meta">
+                            CB1-рецепторы · эндоканнабиноидная система ·
+                            нейропластика
+                        </div>
                     </div>
-                    <div class="legend-item">
-                        <div
-                            class="legend-line"
-                            style="background: #9b59b6"
-                        ></div>
-                        психологический
-                    </div>
-                </div>
-            </div>
-            <div class="chart-wrap">
-                <svg
-                    class="intensity-chart"
-                    id="intensityChart"
-                    viewBox="0 0 800 140"
-                    preserveAspectRatio="xMidYMid meet"
-                ></svg>
-            </div>
-            <div class="chart-note">
-                * качественная схема, не количественные данные
-            </div>
-        </div>
 
-        <div class="main">
-            <nav class="nav" id="nav"></nav>
-            <div class="content" id="content"></div>
+                    <div class="sec-label rail-nav-label">периоды</div>
+                    <nav class="nav" id="nav"></nav>
+
+                    <div class="rail-note">
+                        Качественная схема процессов восстановления. Не
+                        количественные данные и не медицинская рекомендация.
+                    </div>
+                </aside>
+
+                <!-- ===================== STAGE ===================== -->
+                <main class="stage">
+                    <!-- Overview -->
+                    <section class="overview">
+                        <div class="ov-head">
+                            <div class="sec-label">карта восстановления</div>
+                            <div class="ov-hint">
+                                нажми на период — шкала, график или список
+                            </div>
+                        </div>
+
+                        <div class="timeline-track" id="tlTrack"></div>
+
+                        <div class="chart-title">
+                            <div class="sec-label">дискомфорт по периодам</div>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <div
+                                        class="legend-line"
+                                        style="background: var(--red)"
+                                    ></div>
+                                    физический
+                                </div>
+                                <div class="legend-item">
+                                    <div
+                                        class="legend-line"
+                                        style="background: var(--purple)"
+                                    ></div>
+                                    психологический
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-wrap">
+                            <svg
+                                class="intensity-chart"
+                                id="intensityChart"
+                                viewBox="0 0 1000 210"
+                                preserveAspectRatio="none"
+                            ></svg>
+                        </div>
+                        <div class="chart-note">
+                            * качественная схема, не количественные данные
+                        </div>
+                    </section>
+
+                    <!-- Detail -->
+                    <div class="content" id="content"></div>
+                </main>
+            </div>
         </div>
 
         <script>
@@ -598,12 +797,12 @@
                         "Начинается апрегуляция CB1-рецепторов — мозг увеличивает их количество и чувствительность. Этот процесс идёт с первого дня, даже если субъективно ничего хорошего не ощущается.",
                     tip: "Физическая нагрузка утром — бег, плавание, что угодно интенсивное. Анандамид выделяется при аэробной нагрузке и частично компенсирует дефицит эндоканнабиноидов. Мелатонин 3–5 мг за 30 минут до сна.",
                     systems: [
-                        { name: "CB1-рецепторы", pct: 10, color: "#e74c3c" },
-                        { name: "Дофамин", pct: 30, color: "#e67e22" },
-                        { name: "Норадреналин", pct: 15, color: "#e74c3c" },
-                        { name: "Серотонин", pct: 35, color: "#f39c12" },
-                        { name: "Сон (REM)", pct: 20, color: "#e74c3c" },
-                        { name: "Гиппокамп", pct: 25, color: "#e67e22" },
+                        { name: "CB1-рецепторы", pct: 10 },
+                        { name: "Дофамин", pct: 30 },
+                        { name: "Норадреналин", pct: 15 },
+                        { name: "Серотонин", pct: 35 },
+                        { name: "Сон (REM)", pct: 20 },
+                        { name: "Гиппокамп", pct: 25 },
                     ],
                 },
                 {
@@ -637,12 +836,12 @@
                         "Нормализуется аппетит и работа ЖКТ. CB1-рецепторы гипоталамуса начинают реагировать на эндогенные сигналы голода правильно. Серотониновая система запускает восстановительный процесс.",
                     tip: "Не принимай важных решений на этой неделе — эмоциональный фон физиологически искажён. Магний глицинат 300–400 мг вечером снижает возбудимость нервной системы и улучшает качество сна.",
                     systems: [
-                        { name: "CB1-рецепторы", pct: 25, color: "#e67e22" },
-                        { name: "Дофамин", pct: 15, color: "#c0392b" },
-                        { name: "Норадреналин", pct: 30, color: "#e67e22" },
-                        { name: "Серотонин", pct: 25, color: "#e74c3c" },
-                        { name: "Сон (REM)", pct: 20, color: "#e74c3c" },
-                        { name: "Гиппокамп", pct: 30, color: "#e67e22" },
+                        { name: "CB1-рецепторы", pct: 25 },
+                        { name: "Дофамин", pct: 15 },
+                        { name: "Норадреналин", pct: 30 },
+                        { name: "Серотонин", pct: 25 },
+                        { name: "Сон (REM)", pct: 20 },
+                        { name: "Гиппокамп", pct: 30 },
                     ],
                 },
                 {
@@ -676,12 +875,12 @@
                         "Гиппокамп запустил нейрогенез — образование новых нейронных связей. THC хронически подавлял этот процесс. Гиппокамп отвечает за краткосрочную память — улучшение будет заметно в ближайшие недели.",
                     tip: "Начни восстанавливать рабочие ритуалы — фиксированное время, одно рабочее место, телефон вне досягаемости во время рабочего блока. Мозгу нужны внешние структуры пока внутренняя регуляция восстанавливается.",
                     systems: [
-                        { name: "CB1-рецепторы", pct: 60, color: "#f39c12" },
-                        { name: "Дофамин", pct: 50, color: "#f39c12" },
-                        { name: "Норадреналин", pct: 65, color: "#f39c12" },
-                        { name: "Серотонин", pct: 50, color: "#e67e22" },
-                        { name: "Сон (REM)", pct: 50, color: "#f39c12" },
-                        { name: "Гиппокамп", pct: 45, color: "#e67e22" },
+                        { name: "CB1-рецепторы", pct: 60 },
+                        { name: "Дофамин", pct: 50 },
+                        { name: "Норадреналин", pct: 65 },
+                        { name: "Серотонин", pct: 50 },
+                        { name: "Сон (REM)", pct: 50 },
+                        { name: "Гиппокамп", pct: 45 },
                     ],
                 },
                 {
@@ -715,12 +914,12 @@
                         "Префронтальная кора наращивает регуляторные связи с лимбической системой. Именно сейчас формируется способность фокусироваться, откладывать импульсы и работать без внешней химической поддержки.",
                     tip: "Триггеры — главная угроза срыва сейчас. Не проверяй себя намеренно оказываясь в триггерных ситуациях — это не тренировка воли, это активация нейронной дорожки которую ты пытаешься ослабить.",
                     systems: [
-                        { name: "CB1-рецепторы", pct: 75, color: "#27ae60" },
-                        { name: "Дофамин", pct: 65, color: "#f39c12" },
-                        { name: "Норадреналин", pct: 80, color: "#27ae60" },
-                        { name: "Серотонин", pct: 60, color: "#f39c12" },
-                        { name: "Сон (REM)", pct: 70, color: "#27ae60" },
-                        { name: "Гиппокамп", pct: 60, color: "#f39c12" },
+                        { name: "CB1-рецепторы", pct: 75 },
+                        { name: "Дофамин", pct: 65 },
+                        { name: "Норадреналин", pct: 80 },
+                        { name: "Серотонин", pct: 60 },
+                        { name: "Сон (REM)", pct: 70 },
+                        { name: "Гиппокамп", pct: 60 },
                     ],
                 },
                 {
@@ -750,12 +949,12 @@
                         "Исполнительные функции: планирование, торможение импульсов, переключение внимания, рабочая память. Скорость обработки информации нарастает. Нейрогенез гиппокампа продолжается.",
                     tip: "Давай мозгу сложные задачи — это ускоряет нейропластическую адаптацию. Когнитивная нагрузка в этот период работает как тренировка восстанавливающихся исполнительных функций.",
                     systems: [
-                        { name: "CB1-рецепторы", pct: 85, color: "#27ae60" },
-                        { name: "Дофамин", pct: 80, color: "#27ae60" },
-                        { name: "Норадреналин", pct: 90, color: "#27ae60" },
-                        { name: "Серотонин", pct: 80, color: "#27ae60" },
-                        { name: "Сон (REM)", pct: 85, color: "#27ae60" },
-                        { name: "Гиппокамп", pct: 75, color: "#f39c12" },
+                        { name: "CB1-рецепторы", pct: 85 },
+                        { name: "Дофамин", pct: 80 },
+                        { name: "Норадреналин", pct: 90 },
+                        { name: "Серотонин", pct: 80 },
+                        { name: "Сон (REM)", pct: 85 },
+                        { name: "Гиппокамп", pct: 75 },
                     ],
                 },
                 {
@@ -785,12 +984,12 @@
                         "Нейрогенез гиппокампа завершает активную фазу. Долгосрочная и рабочая память на уровне или выше доупотребительного — улучшается способность удерживать контекст и воспроизводить информацию.",
                     tip: "Выяви ситуации в которых каннабис выполнял конкретную функцию — фокус, сон, тревога — и найди конкретную замену под каждую. Не общую, а точечную.",
                     systems: [
-                        { name: "CB1-рецепторы", pct: 95, color: "#27ae60" },
-                        { name: "Дофамин", pct: 90, color: "#27ae60" },
-                        { name: "Норадреналин", pct: 95, color: "#27ae60" },
-                        { name: "Серотонин", pct: 90, color: "#27ae60" },
-                        { name: "Сон (REM)", pct: 95, color: "#27ae60" },
-                        { name: "Гиппокамп", pct: 90, color: "#27ae60" },
+                        { name: "CB1-рецепторы", pct: 95 },
+                        { name: "Дофамин", pct: 90 },
+                        { name: "Норадреналин", pct: 95 },
+                        { name: "Серотонин", pct: 90 },
+                        { name: "Сон (REM)", pct: 95 },
+                        { name: "Гиппокамп", pct: 90 },
                     ],
                 },
                 {
@@ -820,17 +1019,41 @@
                         "Полная нейропластическая адаптация. CB1-рецепторы восстановлены. Нейрогенез гиппокампа завершён. Дальнейшие изменения — это уже не восстановление после отмены, а обычная жизнь мозга.",
                     tip: "Если трудности с фокусом или регуляцией настроения сохраняются на этом сроке — это повод разобраться отдельно. Каннабис мог годами маскировать то что существовало до него.",
                     systems: [
-                        { name: "CB1-рецепторы", pct: 100, color: "#1abc9c" },
-                        { name: "Дофамин", pct: 100, color: "#1abc9c" },
-                        { name: "Норадреналин", pct: 100, color: "#1abc9c" },
-                        { name: "Серотонин", pct: 100, color: "#1abc9c" },
-                        { name: "Сон (REM)", pct: 100, color: "#1abc9c" },
-                        { name: "Гиппокамп", pct: 95, color: "#1abc9c" },
+                        { name: "CB1-рецепторы", pct: 100 },
+                        { name: "Дофамин", pct: 100 },
+                        { name: "Норадреналин", pct: 100 },
+                        { name: "Серотонин", pct: 100 },
+                        { name: "Сон (REM)", pct: 100 },
+                        { name: "Гиппокамп", pct: 95 },
                     ],
                 },
             ];
 
+            /* Harmonized severity→recovery spectrum (oklch, tuned to ZP palette) */
+            const PALETTE = [
+                "oklch(0.63 0.205 22)", // red — acute
+                "oklch(0.64 0.20 35)", // red-orange — peak
+                "oklch(0.71 0.155 70)", // amber
+                "oklch(0.74 0.145 95)", // gold
+                "oklch(0.68 0.16 150)", // green
+                "oklch(0.66 0.14 240)", // blue
+                "oklch(0.64 0.16 295)", // violet
+            ];
+            PERIODS.forEach((p, i) => (p.color = PALETTE[i]));
+
+            function colorForPct(pct) {
+                if (pct < 35) return "var(--red)";
+                if (pct < 65) return "var(--yellow)";
+                if (pct < 90) return "var(--green)";
+                return "var(--accent)";
+            }
+
             let currentPeriod = 0;
+            const W = 1000,
+                H = 210;
+            const xFracs = [0.03, 0.1, 0.2, 0.4, 0.62, 0.82, 0.96];
+            let physPts = [],
+                psychPts = [];
 
             function buildTimeline() {
                 const track = document.getElementById("tlTrack");
@@ -839,12 +1062,11 @@
                     const seg = document.createElement("div");
                     seg.className = "tl-segment" + (i === 0 ? " active" : "");
                     seg.style.flex = widths[i];
-                    seg.style.minHeight = "100%";
                     const bar = document.createElement("div");
                     bar.className = "tl-bar";
                     bar.style.background = p.color;
-                    bar.style.height = p.intensity * 10 + "%";
-                    bar.style.opacity = "0.7";
+                    bar.style.height = p.intensity * 9 + 8 + "%";
+                    bar.style.opacity = "0.85";
                     seg.appendChild(bar);
                     const label = document.createElement("div");
                     label.className = "tl-days";
@@ -857,22 +1079,15 @@
 
             function buildChart() {
                 const svg = document.getElementById("intensityChart");
-                const W = 800,
-                    H = 140;
-                const xPcts = [0.02, 0.08, 0.18, 0.38, 0.62, 0.82, 0.96];
-
-                // физический дискомфорт — пик в 1-7, быстро падает
                 const physVals = [8, 10, 6, 4, 2, 1, 0.5];
-                // психологический — нарастает к 15-30, пик выше физического, долго держится
                 const psychVals = [3, 5, 7, 10, 5, 2, 1];
 
                 function makePoints(vals) {
                     return vals.map((v, i) => ({
-                        x: xPcts[i] * W,
-                        y: H - (v / 10) * (H - 12) - 6,
+                        x: xFracs[i] * W,
+                        y: H - (v / 10) * (H - 18) - 10,
                     }));
                 }
-
                 function curvePath(pts) {
                     let d = `M ${pts[0].x} ${pts[0].y}`;
                     for (let i = 1; i < pts.length; i++) {
@@ -881,7 +1096,6 @@
                     }
                     return d;
                 }
-
                 function fillPath(pts) {
                     let d = `M ${pts[0].x} ${H} L ${pts[0].x} ${pts[0].y}`;
                     for (let i = 1; i < pts.length; i++) {
@@ -892,59 +1106,72 @@
                     return d;
                 }
 
-                const physPts = makePoints(physVals);
-                const psychPts = makePoints(psychVals);
+                physPts = makePoints(physVals);
+                psychPts = makePoints(psychVals);
 
+                const NS = "http://www.w3.org/2000/svg";
                 svg.innerHTML = `
     <defs>
-      <linearGradient id=physGrad x1=0 y1=0 x2=0 y2=1>
-        <stop offset=0% stop-color=#e74c3c stop-opacity=0.25/>
-        <stop offset=100% stop-color=#e74c3c stop-opacity=0/>
+      <linearGradient id="physGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#f85149" stop-opacity="0.30"/>
+        <stop offset="100%" stop-color="#f85149" stop-opacity="0"/>
       </linearGradient>
-      <linearGradient id=psychGrad x1=0 y1=0 x2=0 y2=1>
-        <stop offset=0% stop-color=#9b59b6 stop-opacity=0.2/>
-        <stop offset=100% stop-color=#9b59b6 stop-opacity=0/>
+      <linearGradient id="psychGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#a371f7" stop-opacity="0.26"/>
+        <stop offset="100%" stop-color="#a371f7" stop-opacity="0"/>
       </linearGradient>
     </defs>
-    <path d="${fillPath(physPts)}" fill="url(#physGrad)"/>
+    <rect id="selBand" x="0" y="0" width="0" height="${H}" fill="#58a6ff" opacity="0.07"/>
+    <line id="selLine" x1="0" y1="0" x2="0" y2="${H}" stroke="#58a6ff" stroke-width="1" stroke-dasharray="3,4" opacity="0.5"/>
     <path d="${fillPath(psychPts)}" fill="url(#psychGrad)"/>
-    <path d="${curvePath(physPts)}" fill="none" stroke="#e74c3c" stroke-width="1.5" opacity="0.8"/>
-    <path d="${curvePath(psychPts)}" fill="none" stroke="#9b59b6" stroke-width="1.5" opacity="0.8" stroke-dasharray="5,3"/>
+    <path d="${fillPath(physPts)}" fill="url(#physGrad)"/>
+    <path d="${curvePath(psychPts)}" fill="none" stroke="#a371f7" stroke-width="2" vector-effect="non-scaling-stroke" stroke-dasharray="6,4" opacity="0.9"/>
+    <path d="${curvePath(physPts)}" fill="none" stroke="#f85149" stroke-width="2" vector-effect="non-scaling-stroke" opacity="0.95"/>
   `;
 
-                // dots on physical curve — clickable
-                physPts.forEach((pt, i) => {
-                    const circle = document.createElementNS(
-                        "http://www.w3.org/2000/svg",
-                        "circle",
-                    );
-                    circle.setAttribute("cx", pt.x);
-                    circle.setAttribute("cy", pt.y);
-                    circle.setAttribute("r", "3.5");
-                    circle.setAttribute("fill", "#e74c3c");
-                    circle.setAttribute("stroke", "#0a0c0f");
-                    circle.setAttribute("stroke-width", "2");
-                    circle.style.cursor = "pointer";
-                    circle.addEventListener("click", () => selectPeriod(i));
-                    svg.appendChild(circle);
-                });
-
-                psychPts.forEach((pt, i) => {
-                    const circle = document.createElementNS(
-                        "http://www.w3.org/2000/svg",
-                        "circle",
-                    );
-                    circle.setAttribute("cx", pt.x);
-                    circle.setAttribute("cy", pt.y);
-                    circle.setAttribute("r", "3");
-                    circle.setAttribute("fill", "#9b59b6");
-                    circle.setAttribute("stroke", "#0a0c0f");
-                    circle.setAttribute("stroke-width", "2");
-                    circle.style.cursor = "pointer";
-                    circle.addEventListener("click", () => selectPeriod(i));
-                    svg.appendChild(circle);
-                });
+                function addDots(pts, color, r) {
+                    pts.forEach((pt, i) => {
+                        const c = document.createElementNS(NS, "circle");
+                        c.setAttribute("cx", pt.x);
+                        c.setAttribute("cy", pt.y);
+                        c.setAttribute("r", r);
+                        c.setAttribute("fill", color);
+                        c.setAttribute("stroke", "#0d1117");
+                        c.setAttribute("stroke-width", "2");
+                        c.setAttribute("vector-effect", "non-scaling-stroke");
+                        c.dataset.idx = i;
+                        c.classList.add("chart-dot");
+                        c.style.cursor = "pointer";
+                        c.style.transition = "r .2s ease";
+                        c.addEventListener("click", () => selectPeriod(i));
+                        svg.appendChild(c);
+                    });
+                }
+                addDots(psychPts, "#a371f7", 4);
+                addDots(physPts, "#f85149", 4);
             }
+
+            function updateChartSelection(idx) {
+                const x = xFracs[idx] * W;
+                const line = document.getElementById("selLine");
+                const band = document.getElementById("selBand");
+                if (line) {
+                    line.setAttribute("x1", x);
+                    line.setAttribute("x2", x);
+                }
+                if (band) {
+                    const half = W * 0.04;
+                    band.setAttribute("x", Math.max(0, x - half));
+                    band.setAttribute("width", half * 2);
+                }
+                document
+                    .querySelectorAll(".chart-dot")
+                    .forEach((d) => d.setAttribute("r", 4));
+                document
+                    .querySelectorAll(`.chart-dot[data-idx="${idx}"]`)
+                    .forEach((d) => d.setAttribute("r", 6.5));
+            }
+
             function buildNav() {
                 const nav = document.getElementById("nav");
                 PERIODS.forEach((p, i) => {
@@ -954,7 +1181,7 @@
                     item.innerHTML = `
       <div class="nav-days">${p.days}</div>
       <div class="nav-title">${p.title}</div>
-      <div class="nav-dot" style="background:${p.color}"></div>
+      <div class="nav-dot" style="color:${p.color};background:${p.color}"></div>
     `;
                     item.addEventListener("click", () => selectPeriod(i));
                     nav.appendChild(item);
@@ -975,45 +1202,48 @@
                 const symptomsHTML = p.symptoms
                     .map(
                         (s) => `
-    <div class="symptom-row" style="border-left-color:${p.color}40">
+    <div class="symptom-row" style="border-left-color:${p.color}">
       <div class="symptom-name">${s.s}</div>
       <div class="symptom-cause">${s.c}</div>
-    </div>
-  `,
+    </div>`,
                     )
                     .join("");
 
                 const systemsHTML = p.systems
-                    .map(
-                        (s) => `
+                    .map((s) => {
+                        const col = colorForPct(s.pct);
+                        return `
     <div class="system-card">
-      <div class="system-name">${s.name}</div>
-      <div class="system-bar-wrap">
-        <div class="system-bar-fill" style="width:${s.pct}%;background:${s.color}"></div>
+      <div class="system-top">
+        <div class="system-name">${s.name}</div>
+        <div class="system-pct">${s.pct}%</div>
       </div>
-      <div class="system-pct">${s.pct}%</div>
-    </div>
-  `,
-                    )
+      <div class="system-bar-wrap">
+        <div class="system-bar-fill" style="width:${s.pct}%;background:${col}"></div>
+      </div>
+    </div>`;
+                    })
                     .join("");
 
                 document.getElementById("content").innerHTML = `
-    <div class="fade-in">
+    <div class="fade-in" style="--p-color:${p.color}">
       <div class="period-header">
-        <div class="period-tag">Период ${p.period} · Дни ${p.days}</div>
-        <div class="period-title">${p.title}</div>
-        <div class="period-subtitle">${p.subtitle}</div>
+        <div class="ph-left">
+          <div class="period-tag">Период ${p.period} · Дни ${p.days}</div>
+          <div class="period-title">${p.title}</div>
+          <div class="period-subtitle">${p.subtitle}</div>
+        </div>
         <div class="intensity-badge" style="color:${p.color}">
-          Интенсивность дискомфорта
+          Дискомфорт
           ${intensityPips(p.intensity, p.color)}
-          <span>${p.intensity}/10</span>
+          <span class="intensity-val">${p.intensity}/10</span>
         </div>
       </div>
 
       <div class="blocks">
         <div class="block">
           <div class="block-header">
-            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.5">
+            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.6">
               <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
             </svg>
             <div class="block-heading">Что происходит в организме</div>
@@ -1023,7 +1253,7 @@
 
         <div class="block">
           <div class="block-header">
-            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.5">
+            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.6">
               <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/>
             </svg>
             <div class="block-heading">Симптомы и их причины</div>
@@ -1035,7 +1265,7 @@
 
         <div class="block recovery-block">
           <div class="block-header">
-            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="1.5">
+            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.6">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
             </svg>
             <div class="block-heading">Что восстанавливается прямо сейчас</div>
@@ -1045,7 +1275,7 @@
 
         <div class="block">
           <div class="block-header">
-            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5">
+            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.6">
               <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/>
             </svg>
             <div class="block-heading">Состояние нейросистем — % от нормы</div>
@@ -1055,9 +1285,9 @@
           </div>
         </div>
 
-        <div class="block tip-block">
+        <div class="block tip-block wide">
           <div class="block-header">
-            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="#4a9eff" stroke-width="1.5">
+            <svg class="block-icon" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.6">
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
             <div class="block-heading">Совет на этот период</div>
@@ -1065,27 +1295,25 @@
           <div class="block-body"><p>${p.tip}</p></div>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
             }
 
             function selectPeriod(idx) {
                 currentPeriod = idx;
-
                 document.querySelectorAll(".nav-item").forEach((el, i) => {
                     el.classList.toggle("active", i === idx);
                 });
                 document.querySelectorAll(".tl-segment").forEach((el, i) => {
                     el.classList.toggle("active", i === idx);
                 });
-
+                updateChartSelection(idx);
                 renderContent(idx);
-                document.getElementById("content").scrollTop = 0;
             }
 
             buildTimeline();
             buildChart();
             buildNav();
+            updateChartSelection(0);
             renderContent(0);
         </script>
     </body>
