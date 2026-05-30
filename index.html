@@ -262,6 +262,63 @@
                 color: var(--muted);
             }
 
+            /* support bot — quiet but always present */
+            .bot-link {
+                display: flex;
+                align-items: center;
+                gap: 11px;
+                margin-top: 14px;
+                padding: 11px 13px;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                background: var(--bg1);
+                text-decoration: none;
+                transition:
+                    border-color 0.16s ease,
+                    background 0.16s ease;
+            }
+            .bot-link:hover {
+                border-color: color-mix(
+                    in srgb,
+                    var(--accent) 50%,
+                    var(--border)
+                );
+                background: var(--bg2);
+            }
+            .bot-icon {
+                width: 17px;
+                height: 17px;
+                flex-shrink: 0;
+                color: var(--text2);
+                transition: color 0.16s ease;
+            }
+            .bot-link:hover .bot-icon {
+                color: var(--accent);
+            }
+            .bot-text {
+                display: flex;
+                flex-direction: column;
+                line-height: 1.25;
+                min-width: 0;
+            }
+            .bot-handle {
+                font-family: var(--mono);
+                font-size: 12px;
+                color: var(--text);
+                transition: color 0.16s ease;
+            }
+            .bot-link:hover .bot-handle {
+                color: var(--accent);
+            }
+            .bot-sub {
+                font-family: var(--mono);
+                font-size: 9px;
+                letter-spacing: 0.13em;
+                text-transform: uppercase;
+                color: var(--muted);
+                margin-top: 2px;
+            }
+
             /* ======================= STAGE ======================= */
             .stage {
                 min-width: 0;
@@ -600,13 +657,13 @@
             .fade-in {
                 animation: fadeIn 0.32s ease;
             }
+            /* entrance animates transform only — opacity stays 1 so the
+               content never renders blank in frozen captures / exports */
             @keyframes fadeIn {
                 from {
-                    opacity: 0;
-                    transform: translateY(8px);
+                    transform: translateY(9px);
                 }
                 to {
-                    opacity: 1;
                     transform: translateY(0);
                 }
             }
@@ -707,6 +764,30 @@
                         Качественная схема процессов восстановления. Не
                         количественные данные и не медицинская рекомендация.
                     </div>
+
+                    <a
+                        class="bot-link"
+                        href="https://t.me/quitweed_bot"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <svg
+                            class="bot-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.6"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="m22 2-7 20-4-9-9-4Z" />
+                            <path d="M22 2 11 13" />
+                        </svg>
+                        <div class="bot-text">
+                            <span class="bot-handle">@quitweed_bot</span>
+                            <span class="bot-sub">бот сопровождения</span>
+                        </div>
+                    </a>
                 </aside>
 
                 <!-- ===================== STAGE ===================== -->
