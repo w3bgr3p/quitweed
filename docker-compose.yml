@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: quitbot
+      POSTGRES_USER: quitbot
+      POSTGRES_PASSWORD: quitbot
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  bot:
+    build: .
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      DATABASE_URL: postgresql+asyncpg://quitbot:quitbot@db/quitbot
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  pgdata:

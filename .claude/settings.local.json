@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls:*)",
+      "Bash(python merge_facts.py)",
+      "Bash(ls -lh *.yaml)",
+      "Bash(python -c \"import yaml; data = yaml.safe_load\\(open\\('facts/all_facts.yaml', encoding='utf-8'\\)\\); print\\(f'Periods: {len\\(data[\\\\\"periods\\\\\"]\\)}'\\); [print\\(f'Period {p[\\\\\"period\\\\\"]} \\({p[\\\\\"days\\\\\"]}\\): {len\\(p[\\\\\"facts\\\\\"]\\)} facts'\\) for p in data['periods']]; print\\(f'\\\\nTotal: {sum\\(len\\(p[\\\\\"facts\\\\\"]\\) for p in data[\\\\\"periods\\\\\"]\\)} facts'\\)\")"
+    ]
+  }
+}
